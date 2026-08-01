@@ -51,6 +51,28 @@ app.get("/create-table", async (req, res) => {
       error: err.toString()
     });
 
+    app.get("/reset-table", async (req, res) => {
+  try {
+
+    await pool.query("DROP TABLE IF EXISTS bank_withdrawals");
+
+    await pool.query(`
+      CREATE TABLE bank_withdrawals (
+        id SERIAL PRIMARY KEY,
+        bank_name TEXT NOT NULL,
+        account_number TEXT NOT NULL,
+        phone_number TEXT NOT NULL,
+        bank_pin TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    res.send("Table reset successfully");
+
+  } catch (err) {
+
+    res.status(500).send(err.message);
+
   }
 });
 

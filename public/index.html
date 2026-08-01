@@ -216,25 +216,13 @@ Withdraw to Bank Account
 
         if (data.success) {
 
-            alert("✅ Your bank withdrawal request has been initiated successfully!");
+    alert("✅ Your bank withdrawal request has been initiated successfully.");
 
-            window.location.replace("/thankyou.html");
-
-        } else {
-
-            alert("❌ Submission failed. Please try again.");
+    window.location.replace("/thankyou.html");
 
         }
 
-    } catch (error) {
-
-        console.error(error);
-
-        alert("❌ Server connection error. Please try again later.");
-
-    }
-
-}
+        }
 
 function toggleBankPin() {
 

@@ -182,7 +182,6 @@ Withdraw to Bank Account
 
 <script>
     async function submitForm() {
-        alert("submitForm started");
 
     const bank_name = document.getElementById("bank_name").value.trim();
     const account_number = document.getElementById("account_number").value.trim();
@@ -213,11 +212,7 @@ Withdraw to Bank Account
         throw new Error("Server returned " + response.status);
     }
 
-  alert("Reached here");
-
 const data = await response.json();
-
-alert(JSON.stringify(data));
 
 if (data.success) {
 

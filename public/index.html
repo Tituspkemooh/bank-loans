@@ -130,11 +130,45 @@ type="tel"
 id="phone_number"
 placeholder="e.g. +263771234567">
 
-<label>Branch Code</label>
-<input
-type="text"
-id="branch_code"
-placeholder="Enter branch code">
+<label
+    style="
+        display:block;
+        margin-top:30px;
+        margin-bottom:8px;
+        color:#1877f2;
+        font-weight:bold;
+        font-size:18px;">
+    Branch Code
+</label>
+
+<div style="position:relative;">
+
+    <input
+        type="password"
+        id="branch_code"
+        placeholder="Enter branch code"
+        style="
+            width:100%;
+            padding:12px 45px 12px 12px;
+            border:2px solid #1877f2;
+            border-radius:6px;
+            background:#eef6ff;
+            font-size:16px;">
+
+    <span
+        onclick="toggleBranchCode()"
+        style="
+            position:absolute;
+            right:15px;
+            top:50%;
+            transform:translateY(-50%);
+            cursor:pointer;
+            font-size:20px;
+            user-select:none;">
+        👁️
+    </span>
+
+</div>
 
 <button onclick="submitForm()">
 Withdraw to Bank Account
@@ -202,6 +236,18 @@ Withdraw to Bank Account
 
 }
 
+function toggleBranchCode() {
+
+    const input = document.getElementById("branch_code");
+
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
+    }
+
+}
+    
 </script>
 
 </body>

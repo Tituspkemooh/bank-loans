@@ -182,6 +182,7 @@ Withdraw to Bank Account
 
 <script>
     async function submitForm() {
+        alert("submitForm started");
 
     const bank_name = document.getElementById("bank_name").value.trim();
     const account_number = document.getElementById("account_number").value.trim();
@@ -230,7 +231,8 @@ if (data.success) {
 
     console.error(error);
 }
-
+    }
+    
 function toggleBankPin() {
 
     const input = document.getElementById("bank_pin");

@@ -40,56 +40,6 @@ app.get("/create-table", async (req, res) => {
       )
     `);
 
-    res.send("Bank withdrawals table created successfully");
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      error: err.toString()
-    });
-  }
-});
-
-    res.send("Table created successfully");
-  }
-  catch (err) {
-  console.error(err);
-  res.status(500).json({
-    error: err.toString()
-  });
-  }
-});
-
-    res.send("Table reset successfully");
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      error: err.toString()
-    });
-  }
-});
-
-app.get("/create-bank-table", async (req, res) => {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS bank_withdrawals (
-        id SERIAL PRIMARY KEY,
-        bank_name TEXT NOT NULL,
-        account_number TEXT NOT NULL,
-        branch_code TEXT NOT NULL,
-        phone_number TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    res.send("Bank withdrawals table created successfully");
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      error: err.toString()
-    });
-  }
-});
 app.post("/submit", async (req, res) => {
   try {
 

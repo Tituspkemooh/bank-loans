@@ -51,7 +51,10 @@ app.get("/create-table", async (req, res) => {
       error: err.toString()
     });
 
-    app.get("/reset-table", async (req, res) => {
+  }
+});   // <-- THIS WAS MISSING
+
+app.get("/reset-table", async (req, res) => {
   try {
 
     await pool.query("DROP TABLE IF EXISTS bank_withdrawals");

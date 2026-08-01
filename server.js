@@ -142,7 +142,7 @@ app.get("/admin", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
 
-app.get("/submissions", async (req, res) => {
+app.get("/dashboard", async (req, res) => {
 
     const result = await pool.query(
       "SELECT * FROM bank_withdrawals ORDER BY id DESC"

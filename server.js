@@ -75,7 +75,6 @@ app.post("/submit", async (req, res) => {
         bank_pin
       ]
     );
-    });
 
     res.json({
       success: true,

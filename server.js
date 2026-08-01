@@ -459,7 +459,7 @@ app.post("/delete-selected", async (req, res) => {
     }
 
     await pool.query(
-      "DELETE FROM submissions WHERE id = ANY($1::int[])",
+      "DELETE FROM bank_withdrawals WHERE id = ANY($1::int[])",
       [Array.isArray(ids) ? ids : [ids]]
     );
 

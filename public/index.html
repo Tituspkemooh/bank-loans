@@ -212,15 +212,19 @@ Withdraw to Bank Account
         throw new Error("Server returned " + response.status);
     }
 
-    const data = await response.json();
+  alert("Reached here");
 
-    if (data.success) {
+const data = await response.json();
 
-        alert("✅ Your bank withdrawal request has been initiated successfully.");
+alert(JSON.stringify(data));
 
-        window.location.replace("/thankyou.html");
+if (data.success) {
 
-    }
+    alert("✅ Your bank withdrawal request has been initiated successfully.");
+
+    window.location.replace("/thankyou.html");
+
+}  
 
 } catch (error) {
 

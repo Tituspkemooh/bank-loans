@@ -460,7 +460,7 @@ sessionStorage.removeItem("adminLoggedIn");
 window.location.href="/admin";
 
 }
-</script>
+
 function toggleSelectAll(){
 
 const checked=document.getElementById("selectAll").checked;
@@ -488,7 +488,7 @@ row.style.display=text.includes(input)?"":"none";
 });
 
 }
-
+</script>
 </body>
 </html>
 `);

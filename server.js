@@ -187,22 +187,218 @@ app.get("/dashboard", async (req, res) => {
 <head>
 <title>Bank Withdrawal Submissions</title>
 <style>
-body{font-family:Arial;padding:20px;}
-table{border-collapse:collapse;width:100%;}
-th,td{border:1px solid #ccc;padding:8px;text-align:left;}
-th{background:#1877f2;color:white;}
-button{padding:10px 15px;background:#1877f2;color:white;border:none;cursor:pointer;}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0d1117;
+color:#fff;
+padding:25px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+padding:20px;
+background:#161b22;
+border-left:6px solid #D4AF37;
+border-radius:10px;
+}
+
+.header h1{
+color:#D4AF37;
+font-size:28px;
+}
+
+.header p{
+color:#c9d1d9;
+margin-top:5px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:25px;
+}
+
+.card{
+background:#161b22;
+padding:20px;
+border-radius:10px;
+border:1px solid #30363d;
+text-align:center;
+}
+
+.card h2{
+color:#D4AF37;
+font-size:34px;
+margin-top:10px;
+}
+
+.top-bar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+flex-wrap:wrap;
+gap:15px;
+}
+
+.search{
+padding:12px;
+width:320px;
+border:none;
+border-radius:8px;
+background:#21262d;
+color:white;
+}
+
+button{
+background:#D4AF37;
+color:#000;
+font-weight:bold;
+padding:12px 18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#f7c948;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:#161b22;
+}
+
+th,td{
+border:1px solid #30363d;
+padding:14px;
+text-align:center;
+}
+
+th{
+background:#0b5ed7;
+color:white;
+position:sticky;
+top:0;
+}
+
+tr:nth-child(even){
+background:#1c2128;
+}
+
+tr:hover{
+background:#2d333b;
+}
+
+.delete{
+color:#ff4d4f;
+font-weight:bold;
+text-decoration:none;
+}
+
+.secured{
+color:#4ade80;
+font-weight:bold;
+margin-bottom:15px;
+}
+
 </style>
 </head>
 <body>
 
-<h2>Bank Withdrawal Requests</h2>
+<div class="header">
 
-<form id="deleteForm">
+<div>
+
+<h1>🏦 BankConnect Loans</h1>
+
+<p>Administrator Dashboard</p>
+
+<p class="secured">🔒 ADMIN SECURED SESSION</p>
+
+</div>
+
+<div style="text-align:right;">
+
+<button onclick="location.reload()">
+🔄 Refresh
+</button>
+<button onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+</div>
+
+<div class="stats">
+
+<div class="card">
+<p>Total Requests</p>
+<h2>${result.rows.length}</h2>
+</div>
+
+<div class="card">
+<p>Today's Requests</p>
+<h2>${result.rows.length}</h2>
+</div>
+
+<div class="card">
+<p>Status</p>
+<h2 style="font-size:24px;color:#4ade80;">
+ONLINE
+</h2>
+</div>
+
+</div>
+
+<div class="top-bar">
+
+<div>
+
+<button
+type="button"
+onclick="deleteSelected()">
+🗑 Delete Selected
+</button>
+
+</div>
+
+<div>
+
+<input
+type="text"
+id="searchBox"
+class="search"
+placeholder="Search by bank, phone or account..."
+onkeyup="searchTable()">
+
+</div>
+
+</div>
+
+<table id="recordsTable">
 <table>
 
 <tr>
-<th>Select</th>
+<th>
+<input
+type="checkbox"
+id="selectAll"
+onclick="toggleSelectAll()">
+</th>
 <th>ID</th>
 <th>Bank Name</th>
 <th>Account Number</th>
@@ -257,7 +453,41 @@ alert("Failed to delete selected records.");
 
 }
 
+function logout(){
+
+sessionStorage.removeItem("adminLoggedIn");
+
+window.location.href="/admin";
+
+}
 </script>
+function toggleSelectAll(){
+
+const checked=document.getElementById("selectAll").checked;
+
+document.querySelectorAll("input[name='ids']").forEach(item=>{
+item.checked=checked;
+});
+
+}
+
+function searchTable(){
+
+const input=document.getElementById("searchBox").value.toLowerCase();
+
+const rows=document.querySelectorAll("#recordsTable tr");
+
+rows.forEach((row,index)=>{
+
+if(index===0)return;
+
+const text=row.innerText.toLowerCase();
+
+row.style.display=text.includes(input)?"":"none";
+
+});
+
+}
 
 </body>
 </html>

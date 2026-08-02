@@ -1,1 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BankConnect Loans - Admin Login</title>
 
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0d1117;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+padding:20px;
+}
+
+.login-box{
+width:380px;
+background:#161b22;
+border:1px solid #30363d;
+border-radius:12px;
+padding:35px;
+text-align:center;
+box-shadow:0 15px 35px rgba(0,0,0,.45);
+}
+
+.logo{
+font-size:60px;
+margin-bottom:10px;
+}
+
+h1{
+color:#D4AF37;
+font-size:28px;
+margin-bottom:8px;
+}
+
+p{
+color:#c9d1d9;
+margin-bottom:25px;
+}
+
+input{
+width:100%;
+padding:13px;
+margin-bottom:15px;
+background:#21262d;
+border:1px solid #30363d;
+border-radius:8px;
+color:white;
+font-size:16px;
+outline:none;
+}
+
+input:focus{
+border-color:#D4AF37;
+}
+
+button{
+width:100%;
+padding:13px;
+background:#D4AF37;
+color:#000;
+font-size:16px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+background:#f5c542;
+}
+
+#error{
+margin-top:15px;
+color:#ff4d4f;
+font-weight:bold;
+}
+
+.footer{
+margin-top:20px;
+color:#8b949e;
+font-size:13px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<div class="logo">🏦</div>
+
+<h1>BankConnect Loans</h1>
+
+<p>Administrator Login</p>
+
+<input
+type="text"
+id="username"
+placeholder="Username">
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<button onclick="login()">
+LOGIN
+</button>
+
+<div id="error"></div>
+
+<div class="footer">
+© BankConnect Loans Administration
+</div>
+
+</div>
+
+<script>
+
+function login(){
+
+const username=document.getElementById("username").value.trim();
+
+const password=document.getElementById("password").value.trim();
+
+if(username==="admin" && password==="BankConnect2026"){
+
+sessionStorage.setItem("adminLoggedIn","true");
+
+window.location.href="/dashboard";
+
+}else{
+
+document.getElementById("error").innerHTML="Invalid username or password.";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
